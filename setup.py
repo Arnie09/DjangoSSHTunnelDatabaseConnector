@@ -1,9 +1,9 @@
 from distutils.core import setup
 
 setup(
-    name='DjangoSSHTunnelDatabaseConnector',
+    name='django-ssh-tunnel-database-connector',
     packages=['DjangoSSHTunnelDatabaseConnector'],
-    version='0.2',
+    version='0.3',
     license='MIT',
     description='This is a library that enables one to use django models to do CRUD operations on a database ' +
                 'hosted remotely and accessible through ssh in a pythonic way',

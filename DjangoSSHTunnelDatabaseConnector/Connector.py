@@ -105,3 +105,14 @@ class Connector:
             cursor.execute(insert_statement)
             self.connection.commit()
             return cursor.lastrowid
+
+    def delete(self, db_table, pk, pk_column='id'):
+
+        if self.connection is not None:
+            cursor = self.connection.cursor()
+            delete_statement = f"DELETE FROM `{db_table}` WHERE (`{pk_column}` = '{pk}');"
+            if self.verbose:
+                print(delete_statement)
+            got_deleted = cursor.execute(delete_statement)
+            self.connection.commit()
+            return got_deleted
