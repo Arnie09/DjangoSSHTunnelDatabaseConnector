@@ -36,10 +36,14 @@ For this kind of Model, if we want to insert data into the table, we write the f
         # want to change, you need not have them here.
         data = {"example_field_one": data_you_want_to_insert}
         
-        model_id = sshTunnelDatabaseConnector.create(
-            Model, data, ["id"]
-        )
+        model_id = sshTunnelDatabaseConnector.create(Model, data, ["id"])
 ```
+
+Thus, _create()_ requires the following arguments:
+* Model = Name of the model whose record you want to insert.
+* data = the data to be inserted in the form of k-v pair in a dictionary
+* columns_to_omit = name of the columns in the db whose value you dont want 
+  to include in the INSERT statment. 
 
 Notice the fact that we did not mention what would be the value of the second
 field of the model. In case it is not mentioned, it's going to take the default
@@ -58,5 +62,16 @@ record you want to delete. Usage of delete:
                    localhost, verbose=False) as sshTunnelDatabaseConnector:
     
         # The response object is 1 if the data was deleted, 0 if it failed. 
-        response = sshTunnelDatabaseConnector.delete(model, pk, pk_column)
+        response = sshTunnelDatabaseConnector.delete(Model, pk, pk_column)
 ```
+
+Thus, _delete()_ requires the following arguments: 
+* Model = Name of the model whose record you want to delete.
+* pk = value of the primary key
+* pk_column = name of the pk column. If nothing is mentioned, the default name 'id'
+  is used. 
+  
+### Other Utility Functions: 
+
+There are some other utility functions to make the life simpler. Those are: 
+ * _batch_delete()_ - This can be used to delete a list of records in a single function call. 

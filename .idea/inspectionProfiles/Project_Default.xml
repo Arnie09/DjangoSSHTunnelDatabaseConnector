@@ -102,6 +102,7 @@
           <option value="scripts.close_ssh_tunnel" />
           <option value="business_development.models.brands.Brands.objects" />
           <option value="business_development_process.models.Websites.objects" />
+          <option value="tests.unit_tests.unittests" />
         </list>
       </option>
     </inspection_tool>
