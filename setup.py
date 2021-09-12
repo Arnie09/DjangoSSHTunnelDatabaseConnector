@@ -12,7 +12,6 @@ setup(
     description='This is a library that enables one to use django models to do CRUD operations on a database ' +
                 'hosted remotely and accessible through ssh in a pythonic way',
     long_description=long_description,
-    long_description_content_type="text/markdown",
     author='Arnab Chanda',
     author_email='arnabchanda@gmail.com',
     url='https://github.com/Arnie09/DjangoSSHTunnelDatabaseConnector',
