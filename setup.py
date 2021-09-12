@@ -1,9 +1,5 @@
 from distutils.core import setup
 
-from pathlib import Path
-this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text()
-
 setup(
     name='django-ssh-tunnel-database-connector',
     packages=['DjangoSSHTunnelDatabaseConnector'],
@@ -11,7 +7,8 @@ setup(
     license='MIT',
     description='This is a library that enables one to use django models to do CRUD operations on a database ' +
                 'hosted remotely and accessible through ssh in a pythonic way',
-    long_description=long_description,
+    long_description="Detailed documentation can be found at: " +
+                     "https://github.com/Arnie09/DjangoSSHTunnelDatabaseConnector",
     author='Arnab Chanda',
     author_email='arnabchanda@gmail.com',
     url='https://github.com/Arnie09/DjangoSSHTunnelDatabaseConnector',
