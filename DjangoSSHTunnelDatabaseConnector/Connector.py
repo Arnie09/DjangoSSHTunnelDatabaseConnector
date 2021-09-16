@@ -145,3 +145,42 @@ class Connector:
         for pk in list_of_pk:
             response.append(self.delete(model, pk, pk_column))
         return response
+
+    def read(self, model, query):
+        """
+        This method is used to read query sets of data and parse those results as Django objects
+        :param model: Model whose data you want to parse
+        :param query: actual filter query in ORM.query
+        :return: list[Model]: list of model objects returned as a result
+        """
+        if self.connection is not None:
+            cursor = self.connection.cursor()
+            query_str = str(query)
+            if self.verbose:
+                print(query_str)
+
+            # execution of the actual query
+            cursor.execute(query_str)
+
+            # reading the column names from the query
+            desc = cursor.description
+            column_names = [col[0] for col in desc]
+
+            data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+            django_col_sql_map = {}
+
+            # creating a map of django column names and mysql table column names because sometimes they are different
+            for field in model._meta.fields:
+                field_name_tuple = field.get_attname_column()
+                django_col_sql_map[field_name_tuple[1]] = field_name_tuple[0]
+
+            result_set = []
+            for results in data:
+                model_object = model()
+                for key in results:
+                    setattr(model_object, django_col_sql_map[key], results[key])
+                result_set.append(model_object)
+
+            return result_set
+        else:
+            raise Exception('Connection error!')
