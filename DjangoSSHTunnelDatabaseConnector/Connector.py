@@ -32,6 +32,22 @@ def form_delete_statement(model, pk, pk_column='id'):
     return f"DELETE FROM `{model._meta.db_table}` WHERE (`{pk_column}` = '{pk}');"
 
 
+def form_update_statement(model, data, pk, pk_column='id'):
+    UPDATE_STATEMENT = f"UPDATE `{model._meta.db_table}` SET "
+    for field in model._meta.fields:
+        field_name = field.name
+        data_type = field.get_internal_type()
+        if field_name in data:
+            if data_type in ['BooleanField', 'IntegerField', 'BigIntegerField']:
+                UPDATE_STATEMENT += f"`{field_name}` = {data[field_name]}, "
+            else:
+                UPDATE_STATEMENT += f"`{field_name}` = '{data[field_name]}', "
+
+    UPDATE_STATEMENT = UPDATE_STATEMENT[:-2]  # removing the extra , and ' ' at the end of the column
+    UPDATE_STATEMENT += f" WHERE (`{pk_column}` = '{pk}');"
+    return UPDATE_STATEMENT
+
+
 class Connector:
 
     def __init__(self, ssh_host, ssh_port, ssh_username, ssh_password, database_username, database_password,
@@ -184,3 +200,21 @@ class Connector:
             return result_set
         else:
             raise Exception('Connection error!')
+
+    def update(self, model, data, pk, pk_column='id'):
+        """
+        This method can be used to update the fields of a model with specific primary key
+        :param model: Model whose data you want to update
+        :param data: Updated values of columns you want to update in a dictionary k-v format
+        :param pk: pk of the row whose data you want to update
+        :param pk_column: name of the column of pk, default is 'id'
+        :return:
+        """
+        if self.connection is not None:
+            cursor = self.connection.cursor()
+            update_statement = form_update_statement(model, data, pk, pk_column)
+            if self.verbose:
+                print(update_statement)
+            got_updated = cursor.execute(update_statement)
+            self.connection.commit()
+            return got_updated
