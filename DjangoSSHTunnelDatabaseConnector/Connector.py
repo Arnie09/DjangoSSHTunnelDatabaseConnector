@@ -3,12 +3,15 @@ import logging
 import sshtunnel
 from sshtunnel import SSHTunnelForwarder
 
+NON_CHARACTER_DTYPES = ['BooleanField', 'IntegerField', 'BigIntegerField']
+
 
 def form_insert_statement(model, data, fields_to_omit):
     insert_statement = f"INSERT INTO `{model._meta.db_table}` ("
     VALUES = ' VALUES ('
     for field in model._meta.fields:
         field_name = field.name
+        data_type = field.get_internal_type()
         default_value = field.get_default()
 
         if field_name not in fields_to_omit:
@@ -19,7 +22,10 @@ def form_insert_statement(model, data, fields_to_omit):
                 else:
                     VALUES += f'"{default_value}",'
             else:
-                VALUES += f'"{data[field_name]}",'
+                if data_type in NON_CHARACTER_DTYPES:
+                    VALUES += f'{data[field_name]},'
+                else:
+                    VALUES += f'"{data[field_name]}",'
     insert_statement = insert_statement[:-1]
     VALUES = VALUES[:-1]
     insert_statement += ')'
@@ -38,7 +44,7 @@ def form_update_statement(model, data, pk, pk_column='id'):
         field_name = field.name
         data_type = field.get_internal_type()
         if field_name in data:
-            if data_type in ['BooleanField', 'IntegerField', 'BigIntegerField']:
+            if data_type in NON_CHARACTER_DTYPES:
                 UPDATE_STATEMENT += f"`{field_name}` = {data[field_name]}, "
             else:
                 UPDATE_STATEMENT += f"`{field_name}` = '{data[field_name]}', "
