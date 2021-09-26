@@ -5,6 +5,14 @@
 
 This library helps to connect to remotely hosted databases and helps to do CRUD operations using Django models in a way that is familiar to using Django ORMs.
 
+### Installation:
+
+To install the latest version of this library, write this in your terminal.
+```
+    pip install django-ssh-tunnel-database-connector
+```
+
+
 ### Usage: 
 
 #### CREATE:
