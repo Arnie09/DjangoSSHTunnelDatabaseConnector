@@ -69,8 +69,52 @@ Thus, _delete()_ requires the following arguments:
 * pk = value of the primary key
 * pk_column = name of the pk column. If nothing is mentioned, the default name 'id'
   is used. 
+
+#### READ:
+
+In order to read you need only two things: model and the django ORM query in sql form.
+The way to form Django ORM query in SQL is to just write a filter query and add `.query` at the end
+
+```
+from DjangoSSHTunnelDatabaseConnector import Connector
+
+with Connector(ssh_host, ssh_port, ssh_username, ssh_assword,
+               database_username, database_password, database_name, 
+               localhost, verbose=False) as sshTunnelDatabaseConnector:
+               
+    # The response of the object is an array of model objects that are read from the database
+    query = Model.objects.filter(some_column="filter_word")
+    model_objects = sshTunnelDatabaseConnector.read(Model, query) 
+```
+
+This _read()_ requires the following arguments:
+
+* Model = Name of the model whose record you want to read.
+* query = Django orm sql query.
+
+#### UPDATE:
+
+In order to update, you need the following three things: model, data, pk and pk column name is optional
+
+```
+from DjangoSSHTunnelDatabaseConnector import Connector
+with Connector(ssh_host, ssh_port, ssh_username, ssh_assword,
+               database_username, database_password, database_name, 
+               localhost, verbose=False) as sshTunnelDatabaseConnector:
+               
+    # The response of the object is an array of model objects that are read from the database
+    data = {"example_field_one": data_you_want_to_insert}
+    model_objects = sshTunnelDatabaseConnector.update(Model, data, 69) 
+```
+
+This _update()_ function takes the following arguments:
+
+* Model = Name of the model whose record you want to update
+* data = Dictionary of column and updated records as K-V 
+* pk = primary key of the record you want to update.
   
 ### Other Utility Functions: 
 
 There are some other utility functions to make the life simpler. Those are: 
  * _batch_delete()_ - This can be used to delete a list of records in a single function call. 
+ * _batch_update()_ - This can be used to update a bunch of records together in a single call. 

@@ -214,7 +214,7 @@ class Connector:
         :param data: Updated values of columns you want to update in a dictionary k-v format
         :param pk: pk of the row whose data you want to update
         :param pk_column: name of the column of pk, default is 'id'
-        :return:
+        :return: int - 1 for updated, 0 for no update
         """
         if self.connection is not None:
             cursor = self.connection.cursor()
@@ -224,3 +224,19 @@ class Connector:
             got_updated = cursor.execute(update_statement)
             self.connection.commit()
             return got_updated
+
+    def batch_update(self, model, data, pk, pk_column='id'):
+        """
+        This method is used to perform batch update operation on a number of db records.
+        :param model: Model whose data you want to update.
+        :param data: List[Dictionary] Updated values of the rows
+        :param pk: List[int] pks of records you want to update
+        :param pk_column: name of the column of pk, default is 'id'
+        :return: list[int] - 1 for for updated, 0 for no update.
+        """
+
+        if self.connection is not None:
+            updated = []
+            for record, primary_key in zip(data, pk):
+                updated.append(self.update(model, record, primary_key, pk_column))
+            return updated
