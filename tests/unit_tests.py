@@ -25,11 +25,11 @@ class SimpleTest(unittest.TestCase):
         from tests.mock_models import SampleModel
 
         data = {
-            'sample_column': "some_value",
+            'sample_column': None,
         }
         actual_insert_statement = form_insert_statement(SampleModel, data, ['id'])
         expected_insert_statement = 'INSERT INTO `sample_table` (`sample_column`,`date`,`null_column`,' + \
-                                '`another_column`) VALUES ("some_value","' + str(datetime.now()) + '",' + \
+                                '`another_column`) VALUES (NULL, "' + str(datetime.now()) + '",' + \
                                 'NULL,"sample");'
 
         self.assertEqual(actual_insert_statement, expected_insert_statement)
@@ -52,7 +52,7 @@ class SimpleTest(unittest.TestCase):
         expected_update_statement = "UPDATE `sample_table` SET `sample_column` = 'some_update_value', " \
                                     "`another_column` = 'yet_another_updated_value' WHERE (`id` = '13');"
 
-        self.assertEqual(actual_update_statement, expected_update_statement)
+        self.assertEqual(expected_update_statement, actual_update_statement)
 
 
 if __name__ == '__main__':

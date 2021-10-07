@@ -6,6 +6,15 @@ from sshtunnel import SSHTunnelForwarder
 NON_CHARACTER_DTYPES = ['BooleanField', 'IntegerField', 'BigIntegerField']
 
 
+def ifNoneReturnNull(data, use_quotes):
+    if data is None:
+        return f"NULL, "
+    if use_quotes:
+        return f"'{data}', "
+    else:
+        return f"{data}, "
+
+
 def form_insert_statement(model, data, fields_to_omit):
     insert_statement = f"INSERT INTO `{model._meta.db_table}` ("
     VALUES = ' VALUES ('
@@ -23,9 +32,9 @@ def form_insert_statement(model, data, fields_to_omit):
                     VALUES += f'"{default_value}",'
             else:
                 if data_type in NON_CHARACTER_DTYPES:
-                    VALUES += f'{data[field_name]},'
+                    VALUES += ifNoneReturnNull(data[field_name], False)
                 else:
-                    VALUES += f'"{data[field_name]}",'
+                    VALUES += ifNoneReturnNull(data[field_name], False)
     insert_statement = insert_statement[:-1]
     VALUES = VALUES[:-1]
     insert_statement += ')'
@@ -45,9 +54,9 @@ def form_update_statement(model, data, pk, pk_column='id'):
         data_type = field.get_internal_type()
         if field_name in data:
             if data_type in NON_CHARACTER_DTYPES:
-                UPDATE_STATEMENT += f"`{field_name}` = {data[field_name]}, "
+                UPDATE_STATEMENT += f"`{field_name}` = {ifNoneReturnNull(data[field_name], False)}"
             else:
-                UPDATE_STATEMENT += f"`{field_name}` = '{data[field_name]}', "
+                UPDATE_STATEMENT += f"`{field_name}` = {ifNoneReturnNull(data[field_name], True)}"
 
     UPDATE_STATEMENT = UPDATE_STATEMENT[:-2]  # removing the extra , and ' ' at the end of the column
     UPDATE_STATEMENT += f" WHERE (`{pk_column}` = '{pk}');"
