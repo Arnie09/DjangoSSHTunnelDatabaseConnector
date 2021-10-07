@@ -25,12 +25,12 @@ class SimpleTest(unittest.TestCase):
         from tests.mock_models import SampleModel
 
         data = {
-            'sample_column': None,
+            'sample_column': "sample data",
         }
         actual_insert_statement = form_insert_statement(SampleModel, data, ['id'])
-        expected_insert_statement = 'INSERT INTO `sample_table` (`sample_column`,`date`,`null_column`,' + \
-                                '`another_column`) VALUES (NULL, "' + str(datetime.now()) + '", ' + \
-                                'NULL, "sample");'
+        expected_insert_statement = "INSERT INTO `sample_table` (`sample_column`,`date`,`null_column`," + \
+                                "`another_column`) VALUES ('sample data', '" + str(datetime.now()) + "', " + \
+                                "NULL, 'sample');"
 
         self.assertEqual(expected_insert_statement, actual_insert_statement)
 

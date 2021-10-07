@@ -27,14 +27,14 @@ def form_insert_statement(model, data, fields_to_omit):
             insert_statement += f'`{field_name}`,'
             if field_name not in data:
                 if default_value is None:
-                    VALUES += f'NULL, '
+                    VALUES += f"NULL, "
                 else:
-                    VALUES += f'"{default_value}", '
+                    VALUES += f"'{default_value}', "
             else:
                 if data_type in NON_CHARACTER_DTYPES:
                     VALUES += ifNoneReturnNull(data[field_name], False)
                 else:
-                    VALUES += ifNoneReturnNull(data[field_name], False)
+                    VALUES += ifNoneReturnNull(data[field_name], True)
     insert_statement = insert_statement[:-1]
     VALUES = VALUES[:-2]
     insert_statement += ')'
