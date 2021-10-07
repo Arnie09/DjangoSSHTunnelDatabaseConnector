@@ -29,10 +29,10 @@ class SimpleTest(unittest.TestCase):
         }
         actual_insert_statement = form_insert_statement(SampleModel, data, ['id'])
         expected_insert_statement = 'INSERT INTO `sample_table` (`sample_column`,`date`,`null_column`,' + \
-                                '`another_column`) VALUES (NULL, "' + str(datetime.now()) + '",' + \
-                                'NULL,"sample");'
+                                '`another_column`) VALUES (NULL, "' + str(datetime.now()) + '", ' + \
+                                'NULL, "sample");'
 
-        self.assertEqual(actual_insert_statement, expected_insert_statement)
+        self.assertEqual(expected_insert_statement, actual_insert_statement)
 
     def test_should_form_delete_statement_correctly(self):
         from tests.mock_models import SampleModel
