@@ -249,3 +249,17 @@ class Connector:
             for record, primary_key in zip(data, pk):
                 updated.append(self.update(model, record, primary_key, pk_column))
             return updated
+
+    def execute_raw_query(self, query):
+        """
+        This method is used to execute raw sql query and return response. This is ideal for update, delete and add
+        operations
+        :param query: Raw sql query to be applied
+        :return: return response
+        """
+
+        if self.connection is not None:
+            cursor = self.connection.cursor()
+            response = cursor.execute(query)
+            self.connection.commit()
+            return response
