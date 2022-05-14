@@ -250,10 +250,11 @@ class Connector:
                 updated.append(self.update(model, record, primary_key, pk_column))
             return updated
 
-    def execute_raw_query(self, query, is_select=False):
+    def execute_raw_query(self, query, params=None, is_select=False):
         """
         This method is used to execute raw sql query and return response. This is ideal for update, delete and add
         operations
+        :param params: parameters to be passed to the query. It can be a list or tuple
         :param is_select: Mark this parameter as true if you want the function to return list of items as responses
         :param query: Raw sql query to be applied
         :return: return response
@@ -261,7 +262,10 @@ class Connector:
 
         if self.connection is not None:
             cursor = self.connection.cursor()
-            response = cursor.execute(query)
+            if params is None:
+                response = cursor.execute(query)
+            else:
+                response = cursor.execute(query, params)
             if is_select:
                 records = cursor.fetchall()
                 return response, records
